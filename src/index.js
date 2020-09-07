@@ -12,36 +12,75 @@ class TrieNode {
   }
 
   getWord() {
-    var word = "";
-    var currNode = this;
-
-    while(currNode) {
-      word += currNode.letter;
-      currNode = currNode.parent;
+    var output = [];
+    var node = this;
+    
+    while (node !== null) {
+      output.unshift(node.letter);
+      node = node.parent;
     }
-
-    return word;
+    
+    return output.join('');
   }
 }
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode(null);
-  }
+function Trie() {
+  this.root = new TrieNode(null);
+}
 
-  insert(word) {
-    var currNode = this.root;
+Trie.prototype.insert = function(word) {
+  var currNode = this.root;
 
-    for(var i = 0; i < word.length; i++) {
-      // if current letter is not there
-      if(!currNode.children.includes(word[i]) {
-        node.children[]
-      }
+  for(var i = 0; i < word.length; i++) {
+    // if current letter is not there
+    if(!currNode.children[word[i]]) {
+      currNode.children[word[i]] = new TrieNode(word[i]);
+
+      currNode.children[word[i]].parent = currNode;
+    }
+
+    currNode = currNode.children[word[i]];
+
+    if(i === word.length - 1) {
+      currNode.isWord = true;
     }
   }
 }
 
-console.log(ex2.getWord());
+function findAllChildrenWords(node, arr) {
+  if(node.isWord) {
+    arr.unshift(node.getWord());
+  }
+
+  for(var child in node.children) {
+    findAllChildrenWords(node.children[child], arr);
+  }
+}
+
+Trie.prototype.findAllWithPrefix = function(prefix) {
+  var currNode = this.root;
+  var output = [];
+
+  for(var i = 0; i < prefix.length; i++) {
+    if(currNode.children[prefix[i]]) {
+      currNode = currNode.children[prefix[i]];
+    } else {
+      return output;
+    }
+  }
+
+  findAllChildrenWords(currNode,output);
+
+  return output;
+}
+
+var trie = new Trie();
+
+// insert few values
+trie.insert("hello");
+trie.insert("helium");
+
+console.log(trie.findAllWithPrefix("he"));
 
 function Square(props) {
   return (
